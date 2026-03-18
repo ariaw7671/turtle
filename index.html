@@ -61,6 +61,41 @@
         mix-blend-mode: overlay;
       }
 
+      /* Fog layer + aged paper / stains / fingerprints / ink */
+      .fog{
+        position:fixed;
+        inset:-20%;
+        pointer-events:none;
+        z-index:-1;
+        opacity:.9;
+        filter: blur(18px);
+        mix-blend-mode: screen;
+        background:
+          radial-gradient(900px 520px at 20% 18%, rgba(255,255,255,.11), rgba(255,255,255,0) 62%),
+          radial-gradient(820px 560px at 78% 34%, rgba(110,231,255,.10), rgba(255,255,255,0) 62%),
+          radial-gradient(920px 600px at 35% 78%, rgba(255,255,255,.08), rgba(255,255,255,0) 64%);
+        animation: fogDrift 18s ease-in-out infinite alternate;
+      }
+      .fog::before{
+        content:"";
+        position:absolute;
+        inset:0;
+        background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)' opacity='.55'/%3E%3C/svg%3E");
+        background-size:420px 420px;
+        opacity:.22;
+        mix-blend-mode: overlay;
+        animation: fogGrain 9s linear infinite;
+      }
+      @keyframes fogDrift{
+        0%{ transform: translate3d(-2.5%, -1.2%, 0) scale(1.03); }
+        50%{ transform: translate3d(2.2%, 1.6%, 0) scale(1.06); }
+        100%{ transform: translate3d(1.0%, -2.2%, 0) scale(1.05); }
+      }
+      @keyframes fogGrain{
+        0%{ transform: translate3d(0,0,0); }
+        100%{ transform: translate3d(-3.5%, 2.5%, 0); }
+      }
+
       .wrap{
         min-height:100%;
         display:grid;
@@ -79,6 +114,7 @@
         border: 1px solid var(--cardBorder);
         box-shadow: 0 26px 70px var(--shadow);
         overflow:hidden;
+        position:relative;
       }
 
       .card__inner{
@@ -86,6 +122,55 @@
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         position:relative;
+      }
+
+      /* torn edge mask + paper / stains overlays inside card */
+      .card::before{
+        content:"";
+        position:absolute;
+        inset:0;
+        pointer-events:none;
+        background:
+          radial-gradient(260px 210px at 78% 22%, rgba(179, 110, 55, .16), rgba(179, 110, 55, 0) 68%),
+          radial-gradient(320px 240px at 18% 78%, rgba(0, 0, 0, .22), rgba(0, 0, 0, 0) 66%),
+          radial-gradient(220px 200px at 22% 22%, rgba(20, 10, 0, .18), rgba(20, 10, 0, 0) 64%),
+          radial-gradient(300px 260px at 68% 72%, rgba(10, 16, 40, .18), rgba(10, 16, 40, 0) 62%);
+        mix-blend-mode: overlay;
+        opacity:.75;
+      }
+      .card::after{
+        content:"";
+        position:absolute;
+        inset:0;
+        pointer-events:none;
+        background:
+          /* old paper grain */
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E"),
+          /* fingerprint-ish rings */
+          url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='480'%3E%3Cg opacity='.55'%3E%3Cpath d='M240 84c-66 0-120 54-120 120 0 75 42 96 42 154 0 22-10 36-10 36' fill='none' stroke='rgba(255,255,255,.55)' stroke-width='1.2'/%3E%3Cpath d='M240 108c-52 0-94 42-94 94 0 64 36 82 36 138 0 17-7 30-7 30' fill='none' stroke='rgba(255,255,255,.5)' stroke-width='1.1'/%3E%3Cpath d='M240 132c-38 0-70 32-70 70 0 50 28 66 28 116 0 14-5 26-5 26' fill='none' stroke='rgba(255,255,255,.46)' stroke-width='1.05'/%3E%3Cpath d='M240 156c-26 0-46 20-46 46 0 36 20 50 20 92 0 12-4 22-4 22' fill='none' stroke='rgba(255,255,255,.42)' stroke-width='1.0'/%3E%3C/g%3E%3C/svg%3E\");
+        background-size: 360px 360px, 520px 520px;
+        background-position: 0 0, 78% 20%;
+        opacity:.10;
+        mix-blend-mode: soft-light;
+      }
+      .torn{
+        position:absolute;
+        inset:0;
+        pointer-events:none;
+        z-index:2;
+        opacity:.85;
+        filter: drop-shadow(0 20px 40px rgba(0,0,0,.45));
+        mask-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M1 3 C 6 1, 10 4, 15 2 C 20 1, 25 5, 30 3 C 35 2, 40 4, 45 2 C 50 1, 55 5, 60 3 C 65 2, 70 4, 75 2 C 80 1, 85 5, 90 3 C 95 2, 98 4, 99 3 L 99 97 C 96 99, 92 96, 88 98 C 84 99, 80 95, 76 97 C 72 98, 68 96, 64 98 C 60 99, 56 95, 52 97 C 48 98, 44 96, 40 98 C 36 99, 32 95, 28 97 C 24 98, 20 96, 16 98 C 12 99, 8 95, 4 97 C 2 98, 1 97, 1 97 Z' fill='white'/%3E%3C/svg%3E\");
+        -webkit-mask-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M1 3 C 6 1, 10 4, 15 2 C 20 1, 25 5, 30 3 C 35 2, 40 4, 45 2 C 50 1, 55 5, 60 3 C 65 2, 70 4, 75 2 C 80 1, 85 5, 90 3 C 95 2, 98 4, 99 3 L 99 97 C 96 99, 92 96, 88 98 C 84 99, 80 95, 76 97 C 72 98, 68 96, 64 98 C 60 99, 56 95, 52 97 C 48 98, 44 96, 40 98 C 36 99, 32 95, 28 97 C 24 98, 20 96, 16 98 C 12 99, 8 95, 4 97 C 2 98, 1 97, 1 97 Z' fill='white'/%3E%3C/svg%3E\");
+        mask-size: 100% 100%;
+        -webkit-mask-size: 100% 100%;
+        mask-repeat:no-repeat;
+        -webkit-mask-repeat:no-repeat;
+        background:
+          radial-gradient(80% 70% at 40% 20%, rgba(255,255,255,.08), rgba(255,255,255,0) 70%),
+          linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,0) 40%, rgba(0,0,0,.12));
+        border-radius: var(--radius);
+        box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset;
       }
 
       .edgeGlow{
@@ -116,13 +201,31 @@
         font-size: clamp(44px, 6.6vw, 78px);
         font-weight: 900;
         line-height: 1.04;
-        letter-spacing: -0.02em;
+        letter-spacing: 0.08em; /* looser */
         text-align:center;
         background: linear-gradient(90deg, #dff8ff, var(--aqua), #b2c7ff);
         -webkit-background-clip:text;
         background-clip:text;
         color: transparent;
-        text-shadow: 0 0 24px rgba(110,231,255,.08);
+        text-shadow:
+          0 0 14px rgba(110,231,255,.20),
+          0 0 32px rgba(110,231,255,.14),
+          0 0 58px rgba(76,125,255,.10);
+        filter: drop-shadow(0 12px 28px rgba(0,0,0,.35));
+      }
+      .titleRow{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap: .65rem;
+        margin-top: 8px;
+      }
+      .turtle{
+        font-size: clamp(34px, 5.2vw, 54px);
+        filter:
+          drop-shadow(0 0 10px rgba(110,231,255,.20))
+          drop-shadow(0 0 24px rgba(76,125,255,.10));
+        transform: translateY(2px);
       }
 
       .subtitle{
@@ -156,11 +259,41 @@
 
       .rules{
         margin:0;
-        padding-left: 1.05rem;
+        padding:0;
+        list-style:none;
         color: var(--muted);
-        line-height:1.8;
+        line-height:1.85;
       }
-      .rules li{ margin: .25rem 0; }
+      .rules li{
+        display:flex;
+        gap: 12px;
+        padding: 10px 10px;
+        border-radius: 14px;
+        background: rgba(7, 20, 46, .26);
+        border: 1px solid rgba(110,231,255,.10);
+      }
+      .rules li + li{ margin-top: 10px; }
+      .rules .num{
+        width: 34px;
+        height: 34px;
+        flex: 0 0 34px;
+        display:grid;
+        place-items:center;
+        border-radius: 12px;
+        background: linear-gradient(180deg, rgba(110,231,255,.18), rgba(76,125,255,.10));
+        border: 1px solid rgba(110,231,255,.18);
+        color: rgba(234,244,255,.92);
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+      }
+      .rules .txt{
+        flex:1;
+        min-width: 0;
+      }
+      .rules strong{
+        color: rgba(110,231,255,.95);
+        font-weight: 800;
+      }
 
       .hint{
         margin: 10px 0 0;
@@ -290,6 +423,7 @@
         .panel{ padding: 16px; }
         .subtitle{ letter-spacing: .22em; }
         .mini{ font-size: .92rem; }
+        .rules li{ padding: 10px 10px; }
       }
 
       @media (prefers-reduced-motion: reduce){
@@ -300,10 +434,12 @@
   </head>
   <body>
     <div class="bg" aria-hidden="true"></div>
+    <div class="fog" aria-hidden="true"></div>
     <main class="wrap">
       <div class="shell">
         <div class="card" role="region" aria-label="AI海龟汤欢迎页">
           <div class="edgeGlow" aria-hidden="true"></div>
+          <div class="torn" aria-hidden="true"></div>
           <div class="card__inner">
             <section id="welcome">
               <div style="display:flex; justify-content:center;">
@@ -312,18 +448,33 @@
                   <span>mystery • deduction</span>
                 </span>
               </div>
-              <h1 class="title">AI海龟汤</h1>
+              <div class="titleRow" aria-label="游戏标题">
+                <span class="turtle" aria-hidden="true">🐢</span>
+                <h1 class="title">AI海龟汤</h1>
+              </div>
               <p class="subtitle">情境推理 · 谜题解密</p>
 
               <div class="grid">
                 <div class="panel">
                   <h2>游戏规则简介</h2>
-                  <ol class="rules">
-                    <li>AI会给出一个看似离奇的情境故事。</li>
-                    <li>你只能提问<strong>是/否</strong>类问题，AI回答「是 / 否 / 无关」。</li>
-                    <li>通过排除与推理，逐步拼出完整真相。</li>
-                    <li>当你确信已还原真相时，说出你的答案。</li>
-                  </ol>
+                  <ul class="rules" aria-label="规则列表">
+                    <li>
+                      <span class="num" aria-hidden="true">1</span>
+                      <span class="txt">AI会给出一个看似离奇的情境故事。</span>
+                    </li>
+                    <li>
+                      <span class="num" aria-hidden="true">2</span>
+                      <span class="txt">你只能提问<strong>是/否</strong>类问题，AI回答「是 / 否 / 无关」。</span>
+                    </li>
+                    <li>
+                      <span class="num" aria-hidden="true">3</span>
+                      <span class="txt">通过排除与推理，逐步拼出完整真相。</span>
+                    </li>
+                    <li>
+                      <span class="num" aria-hidden="true">4</span>
+                      <span class="txt">当你确信已还原真相时，说出你的答案。</span>
+                    </li>
+                  </ul>
                   <p class="hint"><strong>提示：</strong>真相常常隐藏在“细节”和“动机”里。</p>
                 </div>
 
