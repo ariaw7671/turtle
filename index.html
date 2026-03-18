@@ -8,6 +8,8 @@
       :root{
         --bg0:#050818;
         --bg1:#071338;
+        --paperWarm: rgba(210, 176, 110, .18);
+        --paperWarm2: rgba(170, 120, 60, .14);
         --card:rgba(10, 24, 55, .52);
         --cardBorder:rgba(110, 208, 255, .22);
         --text:#eaf4ff;
@@ -67,14 +69,15 @@
         inset:-20%;
         pointer-events:none;
         z-index:-1;
-        opacity:.9;
-        filter: blur(18px);
+        opacity:1;
+        filter: blur(16px) contrast(1.06);
         mix-blend-mode: screen;
         background:
-          radial-gradient(900px 520px at 20% 18%, rgba(255,255,255,.11), rgba(255,255,255,0) 62%),
-          radial-gradient(820px 560px at 78% 34%, rgba(110,231,255,.10), rgba(255,255,255,0) 62%),
-          radial-gradient(920px 600px at 35% 78%, rgba(255,255,255,.08), rgba(255,255,255,0) 64%);
-        animation: fogDrift 18s ease-in-out infinite alternate;
+          radial-gradient(980px 640px at 18% 16%, rgba(255,255,255,.14), rgba(255,255,255,0) 64%),
+          radial-gradient(880px 620px at 78% 32%, rgba(110,231,255,.12), rgba(255,255,255,0) 64%),
+          radial-gradient(1020px 720px at 34% 78%, rgba(255,255,255,.11), rgba(255,255,255,0) 66%),
+          radial-gradient(860px 600px at 88% 82%, rgba(255,255,255,.08), rgba(255,255,255,0) 64%);
+        animation: fogDrift 12s ease-in-out infinite alternate;
       }
       .fog::before{
         content:"";
@@ -82,18 +85,35 @@
         inset:0;
         background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)' opacity='.55'/%3E%3C/svg%3E");
         background-size:420px 420px;
-        opacity:.22;
+        opacity:.30;
         mix-blend-mode: overlay;
-        animation: fogGrain 9s linear infinite;
+        animation: fogGrain 6.5s linear infinite;
+      }
+      .fog::after{
+        content:"";
+        position:absolute;
+        inset:0;
+        background:
+          radial-gradient(760px 520px at 52% 45%, rgba(255,255,255,.12), rgba(255,255,255,0) 62%),
+          radial-gradient(820px 580px at 30% 62%, rgba(255,255,255,.10), rgba(255,255,255,0) 64%),
+          radial-gradient(780px 540px at 74% 58%, rgba(110,231,255,.08), rgba(255,255,255,0) 62%);
+        opacity:.55;
+        filter: blur(22px);
+        mix-blend-mode: screen;
+        animation: fogPulse 8.5s ease-in-out infinite;
       }
       @keyframes fogDrift{
-        0%{ transform: translate3d(-2.5%, -1.2%, 0) scale(1.03); }
-        50%{ transform: translate3d(2.2%, 1.6%, 0) scale(1.06); }
-        100%{ transform: translate3d(1.0%, -2.2%, 0) scale(1.05); }
+        0%{ transform: translate3d(-4.6%, -2.8%, 0) scale(1.06); }
+        50%{ transform: translate3d(3.8%, 2.6%, 0) scale(1.10); }
+        100%{ transform: translate3d(2.0%, -4.2%, 0) scale(1.08); }
       }
       @keyframes fogGrain{
         0%{ transform: translate3d(0,0,0); }
         100%{ transform: translate3d(-3.5%, 2.5%, 0); }
+      }
+      @keyframes fogPulse{
+        0%, 100%{ opacity:.42; transform: translate3d(0,0,0) scale(1.02); }
+        50%{ opacity:.62; transform: translate3d(1.2%, -1.0%, 0) scale(1.06); }
       }
 
       .wrap{
@@ -110,7 +130,9 @@
 
       .card{
         border-radius: var(--radius);
-        background: linear-gradient(180deg, rgba(10, 24, 55, .62), rgba(7, 14, 34, .42));
+        background:
+          radial-gradient(1200px 520px at 50% 0%, rgba(255,255,255,.06), rgba(255,255,255,0) 55%),
+          linear-gradient(180deg, rgba(10, 24, 55, .62), rgba(7, 14, 34, .42));
         border: 1px solid var(--cardBorder);
         box-shadow: 0 26px 70px var(--shadow);
         overflow:hidden;
@@ -131,12 +153,15 @@
         inset:0;
         pointer-events:none;
         background:
+          /* warm aged-paper wash */
+          radial-gradient(700px 520px at 30% 18%, var(--paperWarm), rgba(210,176,110,0) 64%),
+          radial-gradient(760px 560px at 78% 30%, var(--paperWarm2), rgba(170,120,60,0) 66%),
           radial-gradient(260px 210px at 78% 22%, rgba(179, 110, 55, .16), rgba(179, 110, 55, 0) 68%),
           radial-gradient(320px 240px at 18% 78%, rgba(0, 0, 0, .22), rgba(0, 0, 0, 0) 66%),
           radial-gradient(220px 200px at 22% 22%, rgba(20, 10, 0, .18), rgba(20, 10, 0, 0) 64%),
           radial-gradient(300px 260px at 68% 72%, rgba(10, 16, 40, .18), rgba(10, 16, 40, 0) 62%);
         mix-blend-mode: overlay;
-        opacity:.75;
+        opacity:.92;
       }
       .card::after{
         content:"";
@@ -150,8 +175,9 @@
           url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='480'%3E%3Cg opacity='.55'%3E%3Cpath d='M240 84c-66 0-120 54-120 120 0 75 42 96 42 154 0 22-10 36-10 36' fill='none' stroke='rgba(255,255,255,.55)' stroke-width='1.2'/%3E%3Cpath d='M240 108c-52 0-94 42-94 94 0 64 36 82 36 138 0 17-7 30-7 30' fill='none' stroke='rgba(255,255,255,.5)' stroke-width='1.1'/%3E%3Cpath d='M240 132c-38 0-70 32-70 70 0 50 28 66 28 116 0 14-5 26-5 26' fill='none' stroke='rgba(255,255,255,.46)' stroke-width='1.05'/%3E%3Cpath d='M240 156c-26 0-46 20-46 46 0 36 20 50 20 92 0 12-4 22-4 22' fill='none' stroke='rgba(255,255,255,.42)' stroke-width='1.0'/%3E%3C/g%3E%3C/svg%3E\");
         background-size: 360px 360px, 520px 520px;
         background-position: 0 0, 78% 20%;
-        opacity:.10;
+        opacity:.16;
         mix-blend-mode: soft-light;
+        filter: sepia(.55) saturate(.9);
       }
       .torn{
         position:absolute;
@@ -384,7 +410,7 @@
       /* simple page transition */
       .stage{
         display:none;
-        text-align:center;
+        text-align:left;
         padding: clamp(22px, 4vw, 50px);
       }
       .stage.is-on{ display:block; }
@@ -398,6 +424,180 @@
         max-width: 56ch;
         color: rgba(234,244,255,.72);
         line-height:1.8;
+      }
+      .stageGrid{
+        display:grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+        margin-top: 10px;
+      }
+      .row{
+        display:flex;
+        gap: 10px;
+        flex-wrap:wrap;
+        align-items:center;
+      }
+      .field{
+        display:flex;
+        flex-direction:column;
+        gap: 6px;
+        min-width: min(320px, 100%);
+        flex: 1;
+      }
+      label{
+        font-size:.92rem;
+        color: rgba(234,244,255,.70);
+        letter-spacing:.06em;
+      }
+      select, input[type="text"], textarea{
+        width:100%;
+        border-radius: 14px;
+        border: 1px solid rgba(110,231,255,.16);
+        background: rgba(7, 20, 46, .40);
+        color: rgba(234,244,255,.92);
+        padding: 12px 12px;
+        outline:none;
+      }
+      textarea{
+        resize: vertical;
+        min-height: 88px;
+        line-height:1.65;
+      }
+      select:focus-visible, input[type="text"]:focus-visible, textarea:focus-visible{
+        outline: 3px solid rgba(110,231,255,.28);
+        outline-offset: 3px;
+      }
+      .pill{
+        display:inline-flex;
+        align-items:center;
+        gap:.5rem;
+        padding:.45rem .75rem;
+        border-radius:999px;
+        border:1px solid rgba(110,231,255,.14);
+        background: rgba(7, 20, 46, .28);
+        color: rgba(234,244,255,.74);
+        font-size:.9rem;
+        white-space:nowrap;
+      }
+      .chat{
+        border-radius: 16px;
+        border: 1px solid rgba(110,231,255,.14);
+        background: rgba(10, 24, 55, .30);
+        overflow:hidden;
+      }
+      .chatHeader{
+        padding: 12px 14px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap: 10px;
+        border-bottom: 1px solid rgba(110,231,255,.12);
+        background: rgba(7, 20, 46, .26);
+      }
+      .chatLog{
+        padding: 12px;
+        max-height: min(48vh, 420px);
+        overflow:auto;
+      }
+      .msg{
+        display:flex;
+        gap: 10px;
+        padding: 10px 10px;
+        border-radius: 14px;
+        border: 1px solid rgba(255,255,255,.06);
+        background: rgba(0,0,0,.12);
+        margin-bottom: 10px;
+      }
+      .msg--ai{
+        border-color: rgba(110,231,255,.14);
+        background: rgba(7, 20, 46, .22);
+      }
+      .msg--me{
+        border-color: rgba(76,125,255,.14);
+        background: rgba(15, 24, 64, .22);
+      }
+      .avatar{
+        flex: 0 0 34px;
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        display:grid;
+        place-items:center;
+        background: linear-gradient(180deg, rgba(110,231,255,.18), rgba(76,125,255,.10));
+        border: 1px solid rgba(110,231,255,.18);
+      }
+      .bubble{
+        flex: 1;
+        min-width: 0;
+      }
+      .meta{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap: 10px;
+        margin-bottom: 6px;
+        color: rgba(234,244,255,.64);
+        font-size: .85rem;
+        letter-spacing:.06em;
+      }
+      .text{
+        color: rgba(234,244,255,.90);
+        line-height:1.75;
+        white-space:pre-wrap;
+        word-break: break-word;
+      }
+      .chatFooter{
+        padding: 12px;
+        border-top: 1px solid rgba(110,231,255,.12);
+        background: rgba(7, 20, 46, .20);
+      }
+      .sendRow{
+        display:flex;
+        gap: 10px;
+        align-items:stretch;
+      }
+      .sendRow input[type="text"]{
+        flex: 1;
+        min-width: 0;
+      }
+      .btn{
+        border:1px solid rgba(110,231,255,.26);
+        background: rgba(7, 20, 46, .35);
+        color: rgba(234,244,255,.92);
+        padding: 12px 14px;
+        border-radius: 14px;
+        font-weight: 800;
+        cursor:pointer;
+        transition: transform .18s ease, border-color .18s ease, background .18s ease, filter .18s ease;
+        white-space:nowrap;
+      }
+      .btn:hover{
+        transform: translateY(-1px);
+        border-color: rgba(110,231,255,.42);
+        background: rgba(7, 20, 46, .5);
+        filter: saturate(1.04);
+      }
+      .btn:active{ transform: translateY(0px) scale(.99); }
+      .btn:focus-visible{
+        outline: 3px solid rgba(110,231,255,.28);
+        outline-offset: 3px;
+      }
+      .btn--primary{
+        border:0;
+        background: linear-gradient(90deg, rgba(110,231,255,.95), rgba(76,125,255,.95));
+        color: rgba(255,255,255,.96);
+        box-shadow: 0 14px 36px rgba(33, 78, 255, .22), 0 0 0 1px rgba(255,255,255,.08) inset;
+      }
+      .btn--primary:hover{
+        box-shadow: 0 18px 48px rgba(33, 78, 255, .32), 0 0 0 1px rgba(255,255,255,.12) inset, 0 0 42px rgba(110,231,255,.10);
+      }
+      .btn:disabled{
+        opacity:.6;
+        cursor:not-allowed;
+        transform:none;
+      }
+      @media (max-width: 780px){
+        .sendRow{ flex-direction:column; }
       }
       .ghost{
         border:1px solid rgba(110,231,255,.26);
@@ -501,16 +701,98 @@
             </section>
 
             <section id="stage" class="stage" aria-label="游戏占位页">
-              <h2>游戏即将开始</h2>
-              <p>
-                这里是“开始游戏”的过渡页。你可以把后续的对话界面、出题逻辑、计时/提示等功能接到这里。
-                目前我保留了欢迎页的风格与布局，方便你继续扩展。
+              <h2>迷雾之下：海龟汤推理</h2>
+              <p style="max-width:none; margin: 0 0 10px;">
+                欢迎来到未知的迷雾中。你需要通过<strong>封闭式</strong>提问，逼近隐藏的真相——记住，看到的不一定是真实的。
               </p>
-              <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
-                <button id="backBtn" class="ghost" type="button">返回欢迎页</button>
-                <button id="againBtn" class="ghost" type="button">再来一次过渡</button>
+
+              <div class="stageGrid">
+                <div class="panel">
+                  <div class="row" style="justify-content:space-between;">
+                    <span class="pill"><span aria-hidden="true">🗂️</span><span id="caseMeta">未选择汤面</span></span>
+                    <span class="pill"><span aria-hidden="true">⏳</span><span id="timeMeta">—</span></span>
+                    <span class="pill"><span aria-hidden="true">🎭</span><span id="sceneMeta">—</span></span>
+                  </div>
+
+                  <div class="row" style="margin-top:12px;">
+                    <div class="field">
+                      <label for="difficulty">难度</label>
+                      <select id="difficulty">
+                        <option value="all">全部</option>
+                        <option value="basic">基础级</option>
+                        <option value="advanced">进阶级</option>
+                        <option value="expert">烧脑级</option>
+                      </select>
+                    </div>
+                    <div class="field">
+                      <label for="theme">主题</label>
+                      <select id="theme">
+                        <option value="all">全部</option>
+                        <option value="locked_room">密室谜案</option>
+                        <option value="disappearance">失踪之谜</option>
+                        <option value="retro">复古悬疑</option>
+                        <option value="mind_trick">心理诡计</option>
+                        <option value="urban_legend">都市怪谈</option>
+                      </select>
+                    </div>
+                    <div class="field">
+                      <label for="caseSelect">选择汤面</label>
+                      <select id="caseSelect"></select>
+                    </div>
+                  </div>
+
+                  <div class="row" style="margin-top:12px;">
+                    <div class="field" style="min-width: min(220px, 100%); flex: .7;">
+                      <label for="hintLevel">提示强度（1-3）</label>
+                      <select id="hintLevel">
+                        <option value="1">1（轻提示）</option>
+                        <option value="2" selected>2（中提示）</option>
+                        <option value="3">3（强提示，接近谜底）</option>
+                      </select>
+                    </div>
+                    <div class="field" style="min-width: min(220px, 100%); flex: .7;">
+                      <label for="mood">氛围强度</label>
+                      <select id="mood">
+                        <option value="light">轻度悬疑</option>
+                        <option value="heavy" selected>重度悬疑</option>
+                      </select>
+                    </div>
+                    <div class="row" style="gap:10px; margin-top: 22px;">
+                      <button id="startCaseBtn" class="btn btn--primary" type="button">启动本局</button>
+                      <button id="backBtn" class="btn" type="button">返回欢迎页</button>
+                    </div>
+                  </div>
+
+                  <div class="row" style="margin-top:12px;">
+                    <div class="field">
+                      <label for="setupText">汤面</label>
+                      <textarea id="setupText" readonly></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="chat">
+                  <div class="chatHeader">
+                    <span class="pill"><span aria-hidden="true">🕯️</span><span>提问只能得到：是 / 否 / 无关紧要</span></span>
+                    <div class="row" style="gap:8px;">
+                      <button id="hintBtn" class="btn" type="button">提示</button>
+                      <button id="revealBtn" class="btn" type="button">揭晓谜底</button>
+                    </div>
+                  </div>
+                  <div id="chatLog" class="chatLog" aria-label="对话记录"></div>
+                  <div class="chatFooter">
+                    <div class="sendRow">
+                      <input id="qInput" type="text" placeholder="输入封闭式问题，例如：死者是自杀的吗？" />
+                      <button id="askBtn" class="btn btn--primary" type="button">提问</button>
+                    </div>
+                    <div class="row" style="margin-top:10px; justify-content:space-between;">
+                      <span class="pill"><span aria-hidden="true">🧠</span><span id="progressMeta">线索：0 / 0</span></span>
+                      <span class="pill"><span aria-hidden="true">🗝️</span><span id="hintMeta">提示：0</span></span>
+                      <span class="pill"><span aria-hidden="true">📜</span><span id="ruleMeta">规则：严格</span></span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="footer" style="margin-top: 16px;">下一步：把 AI 对话组件挂载到这里。</div>
             </section>
           </div>
         </div>
@@ -556,10 +838,12 @@
 
         startBtn.addEventListener("click", enterStage);
         backBtn.addEventListener("click", backToWelcome);
-        againBtn.addEventListener("click", () => {
-          backToWelcome();
-          window.setTimeout(enterStage, 120);
-        });
+        if (againBtn) {
+          againBtn.addEventListener("click", () => {
+            backToWelcome();
+            window.setTimeout(enterStage, 120);
+          });
+        }
 
         window.addEventListener("keydown", (e) => {
           if (e.key === "Enter" && !e.isComposing) {
@@ -570,6 +854,621 @@
             if (stage.classList.contains("is-on")) backToWelcome();
           }
         });
+      })();
+    </script>
+
+    <script>
+      (function () {
+        // ---------------------------
+        // Data: Turtle Soup library
+        // ---------------------------
+        const DIFFICULTY_LABEL = {
+          basic: "基础级",
+          advanced: "进阶级",
+          expert: "烧脑级",
+        };
+
+        const THEME_LABEL = {
+          locked_room: "密室谜案",
+          disappearance: "失踪之谜",
+          retro: "复古悬疑",
+          mind_trick: "心理诡计",
+          urban_legend: "都市怪谈",
+        };
+
+        /** @type {Array<any>} */
+        const SOUPS = [
+          {
+            id: "B-LOCK-001",
+            title: "蜡烛与反锁门",
+            difficulty: "basic",
+            theme: "locked_room",
+            scene: "单人 / 多人组队",
+            estimated: "5-10 分钟",
+            taboo: ["窗户缝", "绳子", "钥匙在外面", "通风孔"],
+            setup:
+              "午夜的旧宅里，客厅的门从内部反锁。\n主人倒在地毯上，手边只有半支燃尽的蜡烛。\n屋里没有打斗痕迹，也没有人进出。\n发生了什么？",
+            answer:
+              "主人并非被人闯入谋杀。\n他在反锁的客厅里点燃蜡烛取暖，却因通风不良导致缺氧昏迷。\n蜡烛持续燃烧、消耗氧气，进一步加重缺氧。\n他最终倒下。\n所谓“密室”只是反锁与信息误导带来的错觉。",
+            recap: [
+              "反锁门让人误判必须“有人进出”。",
+              "蜡烛是关键：它不仅提供光，也会持续消耗氧气。",
+              "缺氧可以在无外力的情况下造成致命后果。",
+            ],
+            keyClues: [
+              { tag: "candle", text: "蜡烛与死亡有关" },
+              { tag: "oxygen", text: "死因与缺氧/空气有关" },
+              { tag: "noIntruder", text: "确实无人进入" },
+            ],
+            hints: {
+              1: "注意：蜡烛不是装饰，它在“改变”现场。",
+              2: "想想：封闭空间里，蜡烛燃烧会带来什么后果？",
+              3: "死因与氧气有关。不是刀枪，也不是他人闯入。",
+            },
+            qa: [
+              { tag: "noIntruder", any: ["有人进入", "有人进出", "有人来过", "闯入"], a: "否" },
+              { tag: "candle", any: ["蜡烛", "烛", "燃烧"], a: "是" },
+              { tag: "oxygen", any: ["缺氧", "氧气", "窒息", "一氧化碳", "通风"], a: "是" },
+              { any: ["自杀"], a: "否" },
+              { any: ["谋杀", "他杀"], a: "否" },
+              { any: ["打斗", "挣扎"], a: "否" },
+              { any: ["门锁", "反锁", "锁"], a: "是" },
+              { a: "无关紧要" },
+            ],
+          },
+          {
+            id: "A-RET-002",
+            title: "遗书不属于他",
+            difficulty: "advanced",
+            theme: "retro",
+            scene: "单人 / 多人组队",
+            estimated: "10-20 分钟",
+            taboo: ["换字迹", "假名", "旧报纸", "收信人"],
+            setup:
+              "雨夜的小旅馆里，一个男人死在房间。\n桌上有一封遗书，语气像是在告别。\n可老板说：他白天还在兴奋地订明天的车票。\n遗书是真的，但他不是自杀。\n发生了什么？",
+            answer:
+              "遗书确实存在，却并不是写给“死者”的。\n男人误拿了别人寄来的信件（或被调包），遗书的内容让人误以为他将自杀。\n他真正的死因与意外有关：旅馆炉火通风不良产生一氧化碳，夜里窒息身亡。\n白天他仍计划出行，符合“非自杀”的事实。",
+            recap: [
+              "遗书是真，但“署名/收信人/对象”被误读。",
+              "白天订票说明他没有自杀动机。",
+              "密闭空间 + 炉火/通风问题导致一氧化碳中毒。",
+            ],
+            keyClues: [
+              { tag: "letterMisread", text: "遗书与死者身份不完全对应" },
+              { tag: "co", text: "死因与一氧化碳/通风有关" },
+              { tag: "noMurder", text: "不是他杀" },
+            ],
+            hints: {
+              1: "“遗书是真的”并不等于“写给他”。",
+              2: "注意：旅馆这种地方，夜里有什么常见的隐形危险？",
+              3: "一氧化碳。遗书是误导视线的真证据。",
+            },
+            qa: [
+              { tag: "noMurder", any: ["他杀", "谋杀", "凶手", "被杀"], a: "否" },
+              { any: ["自杀"], a: "否" },
+              { tag: "letterMisread", any: ["遗书写给他", "遗书是他写的", "字迹是他的"], a: "否" },
+              { tag: "letterMisread", any: ["遗书", "信", "收信人", "署名", "写给谁"], a: "是" },
+              { tag: "co", any: ["一氧化碳", "煤气", "炉火", "通风", "窒息", "缺氧"], a: "是" },
+              { any: ["打斗", "挣扎"], a: "否" },
+              { a: "无关紧要" },
+            ],
+          },
+          {
+            id: "E-MIND-003",
+            title: "凶手与死者同一人",
+            difficulty: "expert",
+            theme: "mind_trick",
+            scene: "单人（更佳）/ 多人组队",
+            estimated: "10-20 分钟",
+            taboo: ["分身", "双重身份", "镜子", "录音"],
+            setup:
+              "清晨，警局接到报案：\n“凶手已经抓到了。”\n现场只有一具尸体，没有第二个人。\n可卷宗最后写着：凶手和死者是同一人。\n这不是灵异。\n发生了什么？",
+            answer:
+              "所谓“凶手”和“死者”指向同一位自然人，但对应不同的“身份/责任”。\n他在实施犯罪后，为逃避追捕伪造了“抓到凶手”的假象：留下自证其罪的证据与指向自己的线索。\n随后他因意外（或自身行为导致的非他杀）死亡。\n案件结案时，警方确认：导致死亡的直接原因并非他人暴力，而“犯罪者”也确实是他本人——于是出现“凶手与死者同一人”的表述。",
+            recap: [
+              "同一人可以同时承担“犯罪者身份”与“死亡者身份”。",
+              "关键在于：死亡不是他杀，但案件仍有犯罪行为。",
+              "“凶手已抓到”是一句被设计的误导。",
+            ],
+            keyClues: [
+              { tag: "samePerson", text: "同一人承担两种身份" },
+              { tag: "notSupernatural", text: "不是灵异" },
+              { tag: "notMurder", text: "死亡本身不是他杀" },
+            ],
+            hints: {
+              1: "把“凶手”和“死者”当成两个身份标签，而不是两个人。",
+              2: "关注：这起案件里可能存在“犯罪行为”，但“死亡原因”并非他人暴力。",
+              3: "他犯罪后留下自证其罪的线索，又在之后意外身亡。于是凶手=死者。",
+            },
+            qa: [
+              { tag: "notSupernatural", any: ["灵异", "鬼", "超自然", "诅咒"], a: "否" },
+              { tag: "notMurder", any: ["他杀", "谋杀", "被杀", "凶器", "第三者杀"], a: "否" },
+              { tag: "samePerson", any: ["同一人", "一个人", "身份", "两种身份"], a: "是" },
+              { any: ["自杀"], a: "无关紧要" },
+              { any: ["有人在现场", "第二个人", "目击者当场看到"], a: "否" },
+              { any: ["报案", "电话", "短信", "留言"], a: "是" },
+              { a: "无关紧要" },
+            ],
+          },
+        ];
+
+        // ---------------------------
+        // Engine: session + intent + rules
+        // ---------------------------
+        const SESSIONS = new Map(); // gameId -> session
+
+        const nowId = () => "G-" + Date.now().toString(36) + "-" + Math.random().toString(16).slice(2, 8);
+
+        const normalize = (s) =>
+          String(s || "")
+            .trim()
+            .replace(/\s+/g, " ")
+            .replace(/[？?!.。！，,；;：:]/g, "")
+            .toLowerCase();
+
+        const containsAny = (text, keywords) => keywords.some((k) => text.includes(String(k).toLowerCase()));
+
+        const isRevealIntent = (raw) => /揭晓|谜底|答案|真相|复盘|公布/.test(raw);
+        const isHintIntent = (raw) => /提示|线索|卡住|帮帮|给点方向/.test(raw);
+
+        const classifyQuestion = (raw) => {
+          const s = String(raw || "").trim();
+          if (!s) return { kind: "empty" };
+          if (isRevealIntent(s)) return { kind: "reveal" };
+          if (isHintIntent(s)) return { kind: "hint" };
+
+          // "open" when user asks for explanation/whole story
+          if (/发生了什么|到底怎么|怎么回事|请解释|讲讲|还原|推理过程|为什么会这样/.test(s)) return { kind: "open" };
+
+          // "probing" when user asks meta about trick
+          if (/密室诡计|叙诡|反转|多重诡计|是不是.*诡计|套路|类型/.test(s)) return { kind: "probing" };
+
+          // closed yes/no-ish heuristics
+          if (/[吗么]/.test(s) || /是否|是不是|有没有|能否|可否|会不会/.test(s)) return { kind: "closed" };
+
+          // fallback
+          return { kind: "open" };
+        };
+
+        const moodLine = (mood, key) => {
+          const heavy = {
+            welcome: "迷雾在脚边盘旋。请用具体的问题切开它。",
+            offTopic: "这个方向暂时摸不到线索。试着盯住“人物、时间、物品”。",
+            open: "请把问题收束成可回答的是非句。比如：先确认死因？再确认是否有人进入？",
+            probing: "这个方向值得深挖——但我只能回答：是 / 否 / 无关紧要。",
+            hint: "迷雾更浓了。我可以抛出一缕线，但你要自己把它拽回来。",
+            preReveal: "确定要揭开这个隐藏的真相吗？它可能超出你的预料。",
+            repeat: "你再次触碰了同一个问题——看来你很在意这个点。",
+          };
+          const light = {
+            welcome: "请用封闭式提问推进推理。",
+            offTopic: "这个方向暂时没有有效线索，换个角度试试。",
+            open: "请用可以回答“是/否/无关紧要”的问题来问我。",
+            probing: "可以探索这个方向，但我只能回答：是 / 否 / 无关紧要。",
+            hint: "我可以给你一个提示方向。",
+            preReveal: "你确定要揭晓谜底吗？",
+            repeat: "这个问题你已经问过了。",
+          };
+          const bank = mood === "heavy" ? heavy : light;
+          return bank[key] || "";
+        };
+
+        const suspenseWrap = (mood, ynr, extra) => {
+          const base = ynr === "是" ? "是" : ynr === "否" ? "否" : "无关紧要";
+          if (mood === "light") return extra ? `${base}。${extra}` : `${base}。`;
+          const suffixBank = {
+            是: ["——但这个“是”背后藏着更诡异的细节。", "——你靠近了一步。别松手。", "——线索在暗处发光。"],
+            否: ["。你忽略了现场的一个关键痕迹。", "——这条路是迷雾的回声。", "。别被表面牵走。"],
+            无关紧要: ["——雾里有很多噪音。", "。它不会带你抵达真相。", "——先别把力气花在这里。"],
+          };
+          const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+          const extraText = extra ? ` ${extra}` : "";
+          return `${base}${pick(suffixBank[base] || ["。"])}${extraText}`;
+        };
+
+        const listSoups = ({ difficulty = "all", theme = "all" } = {}) => {
+          return SOUPS.filter((s) => (difficulty === "all" ? true : s.difficulty === difficulty)).filter((s) =>
+            theme === "all" ? true : s.theme === theme
+          ).map((s) => ({
+            id: s.id,
+            title: s.title,
+            difficulty: s.difficulty,
+            difficultyLabel: DIFFICULTY_LABEL[s.difficulty],
+            theme: s.theme,
+            themeLabel: THEME_LABEL[s.theme],
+            scene: s.scene,
+            estimated: s.estimated,
+          }));
+        };
+
+        const startGame = ({ soupId, hintLevel = 2, mood = "heavy" }) => {
+          const soup = SOUPS.find((s) => s.id === soupId);
+          if (!soup) throw new Error("Soup not found");
+
+          const gameId = nowId();
+          const keyTotal = soup.keyClues.length;
+          const session = {
+            gameId,
+            soupId,
+            hintLevel: Number(hintLevel) || 2,
+            mood,
+            asked: [],
+            askedNormSet: new Set(),
+            discovered: new Set(),
+            hintsUsed: 0,
+            lastProgressAt: 0,
+            createdAt: Date.now(),
+          };
+          SESSIONS.set(gameId, session);
+
+          return {
+            gameId,
+            setup: soup.setup,
+            meta: {
+              id: soup.id,
+              title: soup.title,
+              difficulty: soup.difficulty,
+              theme: soup.theme,
+              scene: soup.scene,
+              estimated: soup.estimated,
+              keyTotal,
+            },
+          };
+        };
+
+        const evalClosed = (soup, raw, session) => {
+          const n = normalize(raw);
+          // repeat detection
+          if (session.askedNormSet.has(n)) {
+            return {
+              ynr: "无关紧要",
+              extra: moodLine(session.mood, "repeat") + " 答案依然是：无关紧要。",
+              progressTag: null,
+            };
+          }
+
+          for (const rule of soup.qa) {
+            if (!rule.any) {
+              return { ynr: rule.a, extra: "", progressTag: rule.tag || null };
+            }
+            if (containsAny(n, rule.any)) {
+              return { ynr: rule.a, extra: "", progressTag: rule.tag || null };
+            }
+          }
+          return { ynr: "无关紧要", extra: "", progressTag: null };
+        };
+
+        const maybeAutoHint = (session, soup) => {
+          const askedCount = session.asked.length;
+          const progressCount = session.discovered.size;
+          const keyTotal = soup.keyClues.length;
+          if (!askedCount) return null;
+          if (progressCount >= keyTotal) return null;
+          if (session.hintsUsed >= 3) return null;
+
+          // "stuck": last 4 questions no new progress
+          const since = askedCount - session.lastProgressAt;
+          if (since >= 4) {
+            session.hintsUsed += 1;
+            const lvl = Math.max(1, Math.min(3, session.hintLevel));
+            const hint = soup.hints[String(lvl)];
+            return {
+              hint,
+              line: moodLine(session.mood, "hint"),
+              hintsUsed: session.hintsUsed,
+            };
+          }
+          return null;
+        };
+
+        const askQuestion = ({ gameId, question }) => {
+          const session = SESSIONS.get(gameId);
+          if (!session) throw new Error("Game not found");
+          const soup = SOUPS.find((s) => s.id === session.soupId);
+          if (!soup) throw new Error("Soup missing");
+
+          const q = String(question || "").trim();
+          const kind = classifyQuestion(q).kind;
+          if (kind === "empty") {
+            return { reply: suspenseWrap(session.mood, "无关紧要", "你还没有抛出问题。"), triggeredHint: false };
+          }
+          if (kind === "reveal") {
+            return {
+              reply: moodLine(session.mood, "preReveal") + "（请点击右侧“揭晓谜底”按钮）",
+              triggeredHint: false,
+            };
+          }
+          if (kind === "hint") {
+            const lvl = Math.max(1, Math.min(3, session.hintLevel));
+            session.hintsUsed += 1;
+            return {
+              reply: `${moodLine(session.mood, "hint")}\n提示（强度 ${lvl}）：${soup.hints[String(lvl)]}`,
+              triggeredHint: true,
+              hint: soup.hints[String(lvl)],
+              hintsUsed: session.hintsUsed,
+            };
+          }
+          if (kind === "open") {
+            return { reply: moodLine(session.mood, "open"), triggeredHint: false };
+          }
+          if (kind === "probing") {
+            return { reply: moodLine(session.mood, "probing"), triggeredHint: false };
+          }
+
+          // closed
+          const { ynr, extra, progressTag } = evalClosed(soup, q, session);
+          const n = normalize(q);
+          session.asked.push({ q, ynr, at: Date.now() });
+          session.askedNormSet.add(n);
+
+          let newProgress = false;
+          if (progressTag && soup.keyClues.some((c) => c.tag === progressTag)) {
+            if (!session.discovered.has(progressTag) && ynr === "是") {
+              session.discovered.add(progressTag);
+              session.lastProgressAt = session.asked.length;
+              newProgress = true;
+            }
+          }
+
+          const auto = maybeAutoHint(session, soup);
+          const replyMain = suspenseWrap(session.mood, ynr, extra || (newProgress ? "你触到了一个关键节点。" : ""));
+          if (auto) {
+            return {
+              reply: `${replyMain}\n\n${auto.line}\n提示（强度 ${session.hintLevel}）：${auto.hint}`,
+              triggeredHint: true,
+              hint: auto.hint,
+              hintsUsed: auto.hintsUsed,
+              ynr,
+            };
+          }
+          return { reply: replyMain, triggeredHint: false, ynr };
+        };
+
+        const getHint = ({ gameId }) => {
+          const session = SESSIONS.get(gameId);
+          if (!session) throw new Error("Game not found");
+          const soup = SOUPS.find((s) => s.id === session.soupId);
+          if (!soup) throw new Error("Soup missing");
+          const lvl = Math.max(1, Math.min(3, session.hintLevel));
+          session.hintsUsed += 1;
+          return {
+            hint: soup.hints[String(lvl)],
+            hintsUsed: session.hintsUsed,
+          };
+        };
+
+        const reveal = ({ gameId }) => {
+          const session = SESSIONS.get(gameId);
+          if (!session) throw new Error("Game not found");
+          const soup = SOUPS.find((s) => s.id === session.soupId);
+          if (!soup) throw new Error("Soup missing");
+          return {
+            prelude: moodLine(session.mood, "preReveal"),
+            answer: soup.answer,
+            recap: soup.recap,
+            taboo: soup.taboo,
+          };
+        };
+
+        // Expose standardized API surface
+        window.TurtleSoupAPI = {
+          listSoups,
+          startGame,
+          askQuestion,
+          getHint,
+          reveal,
+          _debug: { SOUPS, SESSIONS },
+        };
+
+        // ---------------------------
+        // UI wiring
+        // ---------------------------
+        const el = (id) => document.getElementById(id);
+        const difficultySel = el("difficulty");
+        const themeSel = el("theme");
+        const caseSelect = el("caseSelect");
+        const hintLevelSel = el("hintLevel");
+        const moodSel = el("mood");
+        const startCaseBtn = el("startCaseBtn");
+        const setupText = el("setupText");
+        const chatLog = el("chatLog");
+        const qInput = el("qInput");
+        const askBtn = el("askBtn");
+        const hintBtn = el("hintBtn");
+        const revealBtn = el("revealBtn");
+        const caseMeta = el("caseMeta");
+        const timeMeta = el("timeMeta");
+        const sceneMeta = el("sceneMeta");
+        const progressMeta = el("progressMeta");
+        const hintMeta = el("hintMeta");
+
+        let currentGameId = null;
+        let currentSoup = null;
+        let keyTotal = 0;
+
+        const clearChat = () => {
+          chatLog.innerHTML = "";
+        };
+
+        const scrollChat = () => {
+          chatLog.scrollTop = chatLog.scrollHeight;
+        };
+
+        const addMsg = ({ who, title, text }) => {
+          const wrap = document.createElement("div");
+          wrap.className = "msg " + (who === "ai" ? "msg--ai" : "msg--me");
+
+          const av = document.createElement("div");
+          av.className = "avatar";
+          av.textContent = who === "ai" ? "🐢" : "你";
+
+          const bubble = document.createElement("div");
+          bubble.className = "bubble";
+
+          const meta = document.createElement("div");
+          meta.className = "meta";
+          const left = document.createElement("span");
+          left.textContent = title;
+          const right = document.createElement("span");
+          right.textContent = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+          meta.appendChild(left);
+          meta.appendChild(right);
+
+          const body = document.createElement("div");
+          body.className = "text";
+          body.textContent = text;
+
+          bubble.appendChild(meta);
+          bubble.appendChild(body);
+          wrap.appendChild(av);
+          wrap.appendChild(bubble);
+          chatLog.appendChild(wrap);
+          scrollChat();
+        };
+
+        const refreshList = () => {
+          const list = listSoups({ difficulty: difficultySel.value, theme: themeSel.value });
+          caseSelect.innerHTML = "";
+          if (!list.length) {
+            const opt = document.createElement("option");
+            opt.value = "";
+            opt.textContent = "无匹配汤面";
+            caseSelect.appendChild(opt);
+            return;
+          }
+          for (const item of list) {
+            const opt = document.createElement("option");
+            opt.value = item.id;
+            opt.textContent = `【${item.difficultyLabel}】${item.title} · ${item.themeLabel}`;
+            caseSelect.appendChild(opt);
+          }
+        };
+
+        const updateMeta = () => {
+          if (!currentSoup) {
+            caseMeta.textContent = "未选择汤面";
+            timeMeta.textContent = "—";
+            sceneMeta.textContent = "—";
+            progressMeta.textContent = "线索：0 / 0";
+            hintMeta.textContent = "提示：0";
+            return;
+          }
+          caseMeta.textContent = `#${currentSoup.id} · ${currentSoup.title}（${DIFFICULTY_LABEL[currentSoup.difficulty]}）`;
+          timeMeta.textContent = currentSoup.estimated;
+          sceneMeta.textContent = currentSoup.scene;
+        };
+
+        const updateProgressUI = () => {
+          if (!currentGameId || !currentSoup) {
+            progressMeta.textContent = "线索：0 / 0";
+            hintMeta.textContent = "提示：0";
+            return;
+          }
+          const s = SESSIONS.get(currentGameId);
+          const discovered = s ? s.discovered.size : 0;
+          const hintsUsed = s ? s.hintsUsed : 0;
+          progressMeta.textContent = `线索：${discovered} / ${keyTotal}`;
+          hintMeta.textContent = `提示：${hintsUsed}`;
+        };
+
+        difficultySel.addEventListener("change", refreshList);
+        themeSel.addEventListener("change", refreshList);
+        caseSelect.addEventListener("change", () => {
+          const soupId = caseSelect.value;
+          currentSoup = SOUPS.find((s) => s.id === soupId) || null;
+          updateMeta();
+          setupText.value = currentSoup ? currentSoup.setup : "";
+        });
+
+        startCaseBtn.addEventListener("click", () => {
+          const soupId = caseSelect.value;
+          if (!soupId) return;
+          const soup = SOUPS.find((s) => s.id === soupId);
+          if (!soup) return;
+          const res = startGame({
+            soupId,
+            hintLevel: Number(hintLevelSel.value),
+            mood: moodSel.value,
+          });
+          currentGameId = res.gameId;
+          currentSoup = soup;
+          keyTotal = res.meta.keyTotal;
+          clearChat();
+          setupText.value = res.setup;
+          addMsg({
+            who: "ai",
+            title: "开局",
+            text: `${moodLine(moodSel.value, "welcome")}\n\n汤面：\n${res.setup}`,
+          });
+          updateMeta();
+          updateProgressUI();
+          qInput.focus();
+        });
+
+        const doAsk = async () => {
+          if (!currentGameId) {
+            addMsg({ who: "ai", title: "提示", text: "请先“启动本局”，再开始提问。" });
+            return;
+          }
+          const q = qInput.value.trim();
+          if (!q) return;
+          addMsg({ who: "me", title: "你的问题", text: q });
+          qInput.value = "";
+          askBtn.disabled = true;
+          try {
+            const res = askQuestion({ gameId: currentGameId, question: q });
+            addMsg({ who: "ai", title: "回应", text: res.reply });
+          } catch (e) {
+            addMsg({ who: "ai", title: "错误", text: String(e && e.message ? e.message : e) });
+          } finally {
+            askBtn.disabled = false;
+            updateProgressUI();
+            qInput.focus();
+          }
+        };
+
+        askBtn.addEventListener("click", doAsk);
+        qInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" && !e.isComposing) doAsk();
+        });
+
+        hintBtn.addEventListener("click", () => {
+          if (!currentGameId) {
+            addMsg({ who: "ai", title: "提示", text: "先启动一局，然后我才能给你线索。" });
+            return;
+          }
+          const res = getHint({ gameId: currentGameId });
+          addMsg({
+            who: "ai",
+            title: "提示线索",
+            text: `${moodLine(moodSel.value, "hint")}\n提示（强度 ${hintLevelSel.value}）：${res.hint}`,
+          });
+          updateProgressUI();
+        });
+
+        revealBtn.addEventListener("click", () => {
+          if (!currentGameId) {
+            addMsg({ who: "ai", title: "提示", text: "先启动一局，再揭晓。" });
+            return;
+          }
+          const res = reveal({ gameId: currentGameId });
+          const recap = res.recap.map((x, i) => `${i + 1}. ${x}`).join("\n");
+          const taboo = res.taboo.map((x) => `- ${x}`).join("\n");
+          addMsg({
+            who: "ai",
+            title: "揭晓",
+            text: `${res.prelude}\n\n【谜底】\n${res.answer}\n\n【逻辑复盘】\n${recap}\n\n【禁忌提示（避免直接剧透的关键词）】\n${taboo}`,
+          });
+        });
+
+        // init list + default selection
+        refreshList();
+        if (caseSelect.value) {
+          currentSoup = SOUPS.find((s) => s.id === caseSelect.value) || null;
+          updateMeta();
+          setupText.value = currentSoup ? currentSoup.setup : "";
+        }
+        updateProgressUI();
       })();
     </script>
   </body>
