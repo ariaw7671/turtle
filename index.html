@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI海龟汤</title>
+    <style>
+      :root{
+        --bg0:#050818;
+        --bg1:#071338;
+        --card:rgba(10, 24, 55, .52);
+        --cardBorder:rgba(110, 208, 255, .22);
+        --text:#eaf4ff;
+        --muted:rgba(234, 244, 255, .78);
+        --muted2:rgba(234, 244, 255, .62);
+        --aqua:#6ee7ff;
+        --blue:#4c7dff;
+        --glow:rgba(110, 231, 255, .35);
+        --shadow:rgba(0,0,0,.55);
+        --radius:18px;
+      }
+
+      *{ box-sizing:border-box; }
+      html, body{ height:100%; }
+      body{
+        margin:0;
+        color:var(--text);
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", Arial, sans-serif;
+        background: radial-gradient(1200px 900px at 20% 15%, rgba(76, 125, 255, .18) 0%, transparent 55%),
+                    radial-gradient(900px 700px at 85% 75%, rgba(110, 231, 255, .14) 0%, transparent 60%),
+                    linear-gradient(160deg, var(--bg0), var(--bg1));
+        overflow-x:hidden;
+      }
+
+      .bg{
+        position:fixed;
+        inset:0;
+        pointer-events:none;
+        z-index:-1;
+      }
+      .bg::before{
+        content:"";
+        position:absolute;
+        inset:-40px;
+        background:
+          radial-gradient(2px 2px at 12% 28%, rgba(255,255,255,.55), rgba(255,255,255,0) 55%),
+          radial-gradient(1px 1px at 44% 12%, rgba(255,255,255,.45), rgba(255,255,255,0) 60%),
+          radial-gradient(1.5px 1.5px at 73% 31%, rgba(255,255,255,.35), rgba(255,255,255,0) 62%),
+          radial-gradient(1px 1px at 81% 68%, rgba(255,255,255,.30), rgba(255,255,255,0) 60%),
+          radial-gradient(1.5px 1.5px at 18% 80%, rgba(255,255,255,.28), rgba(255,255,255,0) 62%);
+        filter: blur(.2px);
+        opacity:.75;
+      }
+      .bg::after{
+        content:"";
+        position:absolute;
+        inset:0;
+        background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E");
+        background-size:180px 180px;
+        opacity:.14;
+        mix-blend-mode: overlay;
+      }
+
+      .wrap{
+        min-height:100%;
+        display:grid;
+        place-items:center;
+        padding: clamp(18px, 4vw, 48px);
+      }
+
+      .shell{
+        width:min(860px, 100%);
+        position:relative;
+      }
+
+      .card{
+        border-radius: var(--radius);
+        background: linear-gradient(180deg, rgba(10, 24, 55, .62), rgba(7, 14, 34, .42));
+        border: 1px solid var(--cardBorder);
+        box-shadow: 0 26px 70px var(--shadow);
+        overflow:hidden;
+      }
+
+      .card__inner{
+        padding: clamp(18px, 3.4vw, 42px);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        position:relative;
+      }
+
+      .edgeGlow{
+        position:absolute;
+        inset:-2px;
+        background: linear-gradient(90deg, transparent, rgba(110,231,255,.18), rgba(76,125,255,.16), transparent);
+        filter: blur(14px);
+        opacity:.65;
+        pointer-events:none;
+      }
+
+      .badge{
+        display:inline-flex;
+        align-items:center;
+        gap:.55rem;
+        padding:.45rem .75rem;
+        border-radius:999px;
+        border:1px solid rgba(110,231,255,.22);
+        background: rgba(7, 20, 46, .45);
+        color: rgba(234,244,255,.86);
+        font-size: .9rem;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+      }
+
+      .title{
+        margin: 14px 0 8px;
+        font-size: clamp(44px, 6.6vw, 78px);
+        font-weight: 900;
+        line-height: 1.04;
+        letter-spacing: -0.02em;
+        text-align:center;
+        background: linear-gradient(90deg, #dff8ff, var(--aqua), #b2c7ff);
+        -webkit-background-clip:text;
+        background-clip:text;
+        color: transparent;
+        text-shadow: 0 0 24px rgba(110,231,255,.08);
+      }
+
+      .subtitle{
+        margin:0 0 22px;
+        text-align:center;
+        color: var(--muted2);
+        font-size: clamp(14px, 2.5vw, 18px);
+        letter-spacing:.32em;
+      }
+
+      .grid{
+        display:grid;
+        grid-template-columns: 1.05fr .95fr;
+        gap: 16px;
+        margin-top: 18px;
+      }
+
+      .panel{
+        border-radius: 16px;
+        border: 1px solid rgba(110, 208, 255, .18);
+        background: rgba(10, 24, 55, .36);
+        padding: 18px;
+      }
+
+      .panel h2{
+        margin:0 0 12px;
+        font-size: 1.08rem;
+        letter-spacing: .08em;
+        color: rgba(234,244,255,.92);
+      }
+
+      .rules{
+        margin:0;
+        padding-left: 1.05rem;
+        color: var(--muted);
+        line-height:1.8;
+      }
+      .rules li{ margin: .25rem 0; }
+
+      .hint{
+        margin: 10px 0 0;
+        color: rgba(234,244,255,.82);
+        line-height:1.7;
+      }
+      .hint strong{ color: rgba(110,231,255,.95); }
+
+      .ctaArea{
+        display:flex;
+        flex-direction:column;
+        justify-content:space-between;
+        gap: 12px;
+      }
+
+      .cta{
+        width:100%;
+        border:0;
+        border-radius: 14px;
+        padding: 14px 16px;
+        font-weight: 800;
+        font-size: 1.1rem;
+        color: rgba(255,255,255,.96);
+        background: linear-gradient(90deg, rgba(110,231,255,.95), rgba(76,125,255,.95));
+        box-shadow: 0 16px 40px rgba(33, 78, 255, .22), 0 0 0 1px rgba(255,255,255,.08) inset;
+        position:relative;
+        cursor:pointer;
+        transform: translateZ(0);
+        transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+        overflow:hidden;
+      }
+      .cta::before{
+        content:"";
+        position:absolute;
+        inset:-40% -60%;
+        background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), rgba(255,255,255,0) 55%);
+        transform: translateX(-35%);
+        opacity:.55;
+        transition: transform .28s ease, opacity .28s ease;
+      }
+      .cta:hover{
+        transform: translateY(-2px);
+        box-shadow: 0 22px 56px rgba(33, 78, 255, .32), 0 0 0 1px rgba(255,255,255,.12) inset, 0 0 44px rgba(110,231,255,.12);
+        filter: saturate(1.06);
+      }
+      .cta:hover::before{
+        transform: translateX(0%);
+        opacity:.72;
+      }
+      .cta:active{
+        transform: translateY(0px) scale(.99);
+      }
+      .cta:focus-visible{
+        outline: 3px solid rgba(110,231,255,.38);
+        outline-offset: 3px;
+      }
+
+      .mini{
+        display:flex;
+        gap: 10px;
+        align-items:center;
+        justify-content:space-between;
+        color: rgba(234,244,255,.72);
+        font-size: .95rem;
+        padding: 12px 12px;
+        border-radius: 14px;
+        background: rgba(7, 20, 46, .35);
+        border: 1px solid rgba(110,231,255,.14);
+      }
+
+      .kbd{
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size:.9em;
+        padding:.18em .5em;
+        border-radius: 10px;
+        border: 1px solid rgba(255,255,255,.12);
+        background: rgba(0,0,0,.25);
+        color: rgba(234,244,255,.86);
+      }
+
+      .footer{
+        margin-top: 18px;
+        text-align:center;
+        color: rgba(234,244,255,.55);
+        font-size: .9rem;
+      }
+
+      /* simple page transition */
+      .stage{
+        display:none;
+        text-align:center;
+        padding: clamp(22px, 4vw, 50px);
+      }
+      .stage.is-on{ display:block; }
+      .stage h2{
+        margin:0 0 10px;
+        font-size: clamp(26px, 4vw, 38px);
+        letter-spacing:.02em;
+      }
+      .stage p{
+        margin: 0 auto 18px;
+        max-width: 56ch;
+        color: rgba(234,244,255,.72);
+        line-height:1.8;
+      }
+      .ghost{
+        border:1px solid rgba(110,231,255,.26);
+        background: rgba(7, 20, 46, .35);
+        color: rgba(234,244,255,.92);
+        padding: 12px 14px;
+        border-radius: 14px;
+        font-weight: 700;
+        cursor:pointer;
+        transition: transform .18s ease, border-color .18s ease, background .18s ease;
+      }
+      .ghost:hover{
+        transform: translateY(-1px);
+        border-color: rgba(110,231,255,.42);
+        background: rgba(7, 20, 46, .5);
+      }
+      .ghost:active{
+        transform: translateY(0px);
+      }
+
+      @media (max-width: 780px){
+        .grid{ grid-template-columns: 1fr; }
+        .panel{ padding: 16px; }
+        .subtitle{ letter-spacing: .22em; }
+        .mini{ font-size: .92rem; }
+      }
+
+      @media (prefers-reduced-motion: reduce){
+        .cta, .cta::before, .ghost{ transition:none; }
+        .cta:hover{ transform:none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg" aria-hidden="true"></div>
+    <main class="wrap">
+      <div class="shell">
+        <div class="card" role="region" aria-label="AI海龟汤欢迎页">
+          <div class="edgeGlow" aria-hidden="true"></div>
+          <div class="card__inner">
+            <section id="welcome">
+              <div style="display:flex; justify-content:center;">
+                <span class="badge" aria-label="游戏类型">
+                  <span aria-hidden="true">🕯️</span>
+                  <span>mystery • deduction</span>
+                </span>
+              </div>
+              <h1 class="title">AI海龟汤</h1>
+              <p class="subtitle">情境推理 · 谜题解密</p>
+
+              <div class="grid">
+                <div class="panel">
+                  <h2>游戏规则简介</h2>
+                  <ol class="rules">
+                    <li>AI会给出一个看似离奇的情境故事。</li>
+                    <li>你只能提问<strong>是/否</strong>类问题，AI回答「是 / 否 / 无关」。</li>
+                    <li>通过排除与推理，逐步拼出完整真相。</li>
+                    <li>当你确信已还原真相时，说出你的答案。</li>
+                  </ol>
+                  <p class="hint"><strong>提示：</strong>真相常常隐藏在“细节”和“动机”里。</p>
+                </div>
+
+                <div class="ctaArea">
+                  <div class="panel" style="padding: 16px 16px 14px;">
+                    <h2 style="margin-bottom:10px;">准备好了吗？</h2>
+                    <p style="margin:0; color: rgba(234,244,255,.72); line-height:1.8;">
+                      点击开始进入游戏（本页先提供占位过渡，方便你后续接入真正的 AI 对话/出题逻辑）。
+                    </p>
+                  </div>
+
+                  <button id="startBtn" class="cta" type="button">
+                    开始游戏 <span aria-hidden="true">→</span>
+                  </button>
+
+                  <div class="mini" aria-label="快捷键提示">
+                    <span>按 <span class="kbd">Enter</span> 也可以开始</span>
+                    <span id="status" aria-live="polite" style="color: rgba(234,244,255,.62);">待命</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="footer">深蓝之下，真相正在浮现。</div>
+            </section>
+
+            <section id="stage" class="stage" aria-label="游戏占位页">
+              <h2>游戏即将开始</h2>
+              <p>
+                这里是“开始游戏”的过渡页。你可以把后续的对话界面、出题逻辑、计时/提示等功能接到这里。
+                目前我保留了欢迎页的风格与布局，方便你继续扩展。
+              </p>
+              <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+                <button id="backBtn" class="ghost" type="button">返回欢迎页</button>
+                <button id="againBtn" class="ghost" type="button">再来一次过渡</button>
+              </div>
+              <div class="footer" style="margin-top: 16px;">下一步：把 AI 对话组件挂载到这里。</div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      (function () {
+        const startBtn = document.getElementById("startBtn");
+        const backBtn = document.getElementById("backBtn");
+        const againBtn = document.getElementById("againBtn");
+        const welcome = document.getElementById("welcome");
+        const stage = document.getElementById("stage");
+        const status = document.getElementById("status");
+
+        const setStatus = (text) => {
+          if (!status) return;
+          status.textContent = text;
+        };
+
+        const enterStage = () => {
+          setStatus("进入中…");
+          startBtn.disabled = true;
+          startBtn.style.opacity = "0.92";
+          startBtn.style.cursor = "wait";
+
+          window.setTimeout(() => {
+            welcome.style.display = "none";
+            stage.classList.add("is-on");
+            setStatus("已进入");
+            startBtn.disabled = false;
+            startBtn.style.opacity = "";
+            startBtn.style.cursor = "";
+          }, 380);
+        };
+
+        const backToWelcome = () => {
+          stage.classList.remove("is-on");
+          welcome.style.display = "";
+          setStatus("待命");
+          startBtn.focus();
+        };
+
+        startBtn.addEventListener("click", enterStage);
+        backBtn.addEventListener("click", backToWelcome);
+        againBtn.addEventListener("click", () => {
+          backToWelcome();
+          window.setTimeout(enterStage, 120);
+        });
+
+        window.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" && !e.isComposing) {
+            if (stage.classList.contains("is-on")) return;
+            enterStage();
+          }
+          if (e.key === "Escape") {
+            if (stage.classList.contains("is-on")) backToWelcome();
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
